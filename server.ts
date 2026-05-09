@@ -22,12 +22,12 @@ async function startServer() {
     // Use user-provided config if available, otherwise fallback to env vars
     const apiKey = userConfig?.apiKey || process.env.VOLCENGINE_API_KEY;
     const endpointId = model === "seedance-2.0" 
-      ? (userConfig?.endpointId20 || process.env.ARK_ENDPOINT_ID_2_0)
-      : (userConfig?.endpointId20Fast || process.env.ARK_ENDPOINT_ID_2_0_FAST);
+      ? "ep-m-20260421001121-7fswk"
+      : "ep-m-20260502212301-rt97m";
 
-    if (!apiKey || !endpointId) {
+    if (!apiKey) {
       return res.status(400).json({ 
-        error: "未配置 API Key 或 接入点 ID。请在系统设置中输入。" 
+        error: "未配置 API Key。请在页面右上角设置中输入您的火山引擎 API Key。" 
       });
     }
 

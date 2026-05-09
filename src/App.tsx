@@ -36,8 +36,6 @@ interface GenerationParams {
 
 interface UserConfig {
   apiKey: string;
-  endpointId20: string;
-  endpointId20Fast: string;
 }
 
 interface VideoResult {
@@ -66,9 +64,7 @@ export default function App() {
     duration: 5,
   });
   const [userConfig, setUserConfig] = useState<UserConfig>({
-    apiKey: "",
-    endpointId20: "",
-    endpointId20Fast: ""
+    apiKey: ""
   });
   const [isConfigOpen, setIsConfigOpen] = useState(false);
   const [uploadedImages, setUploadedImages] = useState<string[]>([]);
@@ -272,35 +268,16 @@ export default function App() {
                           type="password"
                           value={userConfig.apiKey}
                           onChange={(e) => setUserConfig({ ...userConfig, apiKey: e.target.value })}
-                          placeholder="输入 Volcengine Ark API Key"
+                          placeholder="输入您的火山引擎 API Key"
                           className="w-full bg-black/40 border border-white/10 rounded-lg p-2.5 text-xs focus:ring-1 focus:ring-blue-500 outline-none"
                         />
-                      </div>
-                      <div className="space-y-1.5">
-                        <label className="text-[10px] text-zinc-500 uppercase font-bold tracking-widest">Seedance 2.0 接入点</label>
-                        <input 
-                          type="text"
-                          value={userConfig.endpointId20}
-                          onChange={(e) => setUserConfig({ ...userConfig, endpointId20: e.target.value })}
-                          placeholder="ep-202xxxxxxxx"
-                          className="w-full bg-black/40 border border-white/10 rounded-lg p-2.5 text-xs outline-none"
-                        />
-                      </div>
-                      <div className="space-y-1.5">
-                        <label className="text-[10px] text-zinc-500 uppercase font-bold tracking-widest">Seedance 2.0 Fast 接入点</label>
-                        <input 
-                          type="text"
-                          value={userConfig.endpointId20Fast}
-                          onChange={(e) => setUserConfig({ ...userConfig, endpointId20Fast: e.target.value })}
-                          placeholder="ep-fast-xxxxxxxx"
-                          className="w-full bg-black/40 border border-white/10 rounded-lg p-2.5 text-xs outline-none"
-                        />
+                        <p className="text-[9px] text-zinc-600 leading-tight">模型接入点已由系统自动配置（Seedance 2.0 / Fast）。</p>
                       </div>
                       <button 
                         onClick={() => setIsConfigOpen(false)}
                         className="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-2.5 rounded-lg text-xs mt-2 transition-colors"
                       >
-                        保存配置
+                        确认
                       </button>
                     </div>
                   </motion.div>
@@ -311,101 +288,104 @@ export default function App() {
         </div>
       </header>
 
-      <main className="max-w-7xl mx-auto px-6 py-10 grid grid-cols-1 lg:grid-cols-[420px_1fr] gap-12">
+      <main className="max-w-[1440px] mx-auto px-6 py-10 grid grid-cols-1 lg:grid-cols-[440px_1fr] gap-12">
         {/* 控制侧边栏 */}
-        <div className="flex flex-col gap-8">
+        <div className="flex flex-col gap-6">
           {/* 模型选择 */}
-          <section className="bg-zinc-950 border border-white/5 rounded-3xl p-6 shadow-2xl">
-            <div className="flex items-center gap-2 mb-5 text-zinc-500 italic">
-              <Layout className="w-4 h-4" />
-              <span className="text-[10px] font-bold uppercase tracking-[0.2em]">Model Selection / 模型选择</span>
+          <section className="bg-zinc-950 border border-white/5 rounded-3xl p-5 shadow-2xl">
+            <div className="flex items-center gap-2 mb-4 text-zinc-500 italic">
+              <Layout className="w-3.5 h-3.5" />
+              <span className="text-[9px] font-bold uppercase tracking-[0.2em]">Model / 模型</span>
             </div>
             
-            <div className="grid grid-cols-1 gap-3">
+            <div className="grid grid-cols-2 gap-2">
               <button 
                 onClick={() => {
                   setModel("seedance-2.0");
                   if (params.resolution === "1080p") setParams({...params, resolution: "720p"});
                 }}
-                className={`flex items-center justify-between p-5 rounded-2xl border transition-all ${
+                className={`flex flex-col items-center justify-center py-2 rounded-xl border transition-all ${
                   model === "seedance-2.0" 
                     ? "bg-blue-500/10 border-blue-500/50 text-blue-400" 
                     : "bg-white/5 border-white/5 text-zinc-500 hover:bg-white/10"
                 }`}
               >
-                <div className="text-left">
-                  <div className="font-bold text-sm tracking-tight">Seedance 2.0</div>
-                  <div className="text-[10px] opacity-50 mt-0.5">旗舰级视频生成模型 • 画质优先</div>
-                </div>
-                {model === "seedance-2.0" && <div className="w-2.5 h-2.5 rounded-full bg-blue-500 shadow-[0_0_15px_rgba(59,130,246,0.8)]" />}
+                <div className="font-bold text-[11px]">Seedance 2.0</div>
+                <div className="text-[8px] opacity-50 text-center leading-tight">旗舰画质</div>
               </button>
               
               <button 
                 onClick={() => setModel("seedance-2.0-fast")}
-                className={`flex items-center justify-between p-5 rounded-2xl border transition-all ${
+                className={`flex flex-col items-center justify-center py-2 rounded-xl border transition-all ${
                   model === "seedance-2.0-fast" 
                     ? "bg-indigo-500/10 border-indigo-500/50 text-indigo-400" 
                     : "bg-white/5 border-white/5 text-zinc-500 hover:bg-white/10"
                 }`}
               >
-                <div className="text-left">
-                  <div className="font-bold text-sm tracking-tight">Seedance 2.0 Fast</div>
-                  <div className="text-[10px] opacity-50 mt-0.5">高速版模型 • 效率优先</div>
-                </div>
-                {model === "seedance-2.0-fast" && <div className="w-2.5 h-2.5 rounded-full bg-indigo-500 shadow-[0_0_15px_rgba(99,102,241,0.8)]" />}
+                <div className="font-bold text-[11px]">Seedance 2.0 Fast</div>
+                <div className="text-[8px] opacity-50 text-center leading-tight">高速极致</div>
               </button>
             </div>
           </section>
 
           {/* 生成参数 */}
-          <section className="bg-zinc-950 border border-white/5 rounded-3xl p-8 shadow-2xl flex flex-col gap-8">
+          <section className="bg-zinc-950 border border-white/5 rounded-3xl p-6 shadow-2xl flex flex-col gap-6">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2 text-zinc-500">
                 <Settings2 className="w-4 h-4" />
-                <span className="text-[10px] font-bold uppercase tracking-[0.2em]">Core Engine / 核心配置</span>
+                <span className="text-[10px] font-bold uppercase tracking-[0.2em]">Engine / 核心参数</span>
               </div>
             </div>
 
             {/* 提示词 */}
-            <div className="flex flex-col gap-3">
-              <label className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest pl-1">Prompt / 提示词</label>
+            <div className="flex flex-col gap-2">
+              <label className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest pl-1">提示词内容</label>
               <textarea 
                 value={params.prompt}
                 onChange={(e) => setParams({ ...params, prompt: e.target.value })}
-                placeholder="描述你想要生成的视频场景... (支持中文)"
-                className="w-full h-32 bg-white/5 border border-white/10 rounded-2xl p-5 text-sm focus:outline-none focus:border-blue-500/50 transition-all resize-none placeholder:text-zinc-700 leading-relaxed"
+                placeholder="在此输入您的创意描述... 支持中文描述视频场景"
+                className="w-full h-40 bg-white/5 border border-white/10 rounded-2xl p-4 text-sm focus:outline-none focus:border-blue-500/50 transition-all resize-y placeholder:text-zinc-700 leading-relaxed min-h-[100px]"
               />
             </div>
 
             {/* 图片上传 */}
-            <div className="flex flex-col gap-3">
+            <div className="flex flex-col gap-2">
               <label className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest pl-1 flex justify-between items-center">
-                <span>Ref Images / 参考图 ({uploadedImages.length}/9)</span>
+                <span>参考图像 (最多9张)</span>
                 {uploadedImages.length > 0 && (
-                  <button onClick={() => setUploadedImages([])} className="text-[9px] hover:text-red-400 transition-colors">清除全选</button>
+                  <button onClick={() => setUploadedImages([])} className="text-[9px] text-zinc-600 hover:text-red-400 transition-colors uppercase font-bold">清空</button>
                 )}
               </label>
-              <div className="grid grid-cols-3 gap-2">
-                {uploadedImages.map((img, idx) => (
-                  <div key={idx} className="aspect-square relative rounded-xl overflow-hidden group border border-white/10">
-                    <img src={img} className="w-full h-full object-cover" />
-                    <button 
-                      onClick={() => removeImage(idx)}
-                      className="absolute top-1 right-1 w-5 h-5 bg-black/60 backdrop-blur-md rounded-full flex items-center justify-center text-white opacity-0 group-hover:opacity-100 transition-opacity"
-                    >
-                      <X className="w-3 h-3" />
-                    </button>
-                  </div>
-                ))}
-                {uploadedImages.length < 9 && (
-                  <button 
-                    onClick={() => fileInputRef.current?.click()}
-                    className="aspect-square bg-white/5 border border-dashed border-white/20 rounded-xl flex items-center justify-center hover:bg-white/10 transition-all group"
-                  >
-                    <Plus className="w-6 h-6 text-zinc-600 group-hover:text-zinc-400" />
-                  </button>
-                )}
+              
+              <div className="bg-black/20 p-3 rounded-2xl border border-white/5">
+                <div className="grid grid-cols-5 gap-2">
+                  {[0, 1, 2, 3, 4, 5, 6, 7, 8].map((idx) => (
+                    <div key={idx} className="aspect-square relative rounded-lg overflow-hidden group border border-white/10 bg-white/5">
+                      {uploadedImages[idx] ? (
+                        <>
+                          <img src={uploadedImages[idx]} className="w-full h-full object-cover" />
+                          <button 
+                            onClick={() => removeImage(idx)}
+                            className="absolute top-0.5 right-0.5 w-4 h-4 bg-black/60 backdrop-blur-md rounded-full flex items-center justify-center text-white opacity-0 group-hover:opacity-100 transition-opacity"
+                          >
+                            <X className="w-2.5 h-2.5" />
+                          </button>
+                        </>
+                      ) : (
+                        <button 
+                          onClick={() => fileInputRef.current?.click()}
+                          className="w-full h-full flex items-center justify-center hover:bg-white/5 transition-colors group"
+                        >
+                          <Plus className="w-3 h-3 text-zinc-700 group-hover:text-zinc-500" />
+                        </button>
+                      )}
+                    </div>
+                  ))}
+                  {/* 第二排空余一个格子 */}
+                  <div className="aspect-square" />
+                </div>
               </div>
+
               <input 
                 type="file" 
                 ref={fileInputRef} 
@@ -417,27 +397,27 @@ export default function App() {
             </div>
 
             {/* 规格配置汇总 */}
-            <div className="grid grid-cols-3 gap-4">
+            <div className="grid grid-cols-3 gap-3">
               <div className="flex flex-col gap-2">
-                <label className="text-[10px] font-bold text-zinc-500 uppercase tracking-[0.1em] flex items-center gap-1.5 italic">
+                <label className="text-[9px] font-bold text-zinc-500 uppercase tracking-[0.1em] flex items-center gap-1.5 italic">
                   <Monitor className="w-3 h-3 text-blue-500" /> 分辨率
                 </label>
                 <select 
                   value={params.resolution}
                   onChange={(e) => setParams({ ...params, resolution: e.target.value })}
-                  className="bg-zinc-900/50 border border-white/10 rounded-xl px-3 py-2.5 text-xs focus:outline-none focus:border-blue-500/50 appearance-none text-zinc-300"
+                  className="bg-zinc-900/50 border border-white/10 rounded-xl px-2 py-2 text-[10px] focus:outline-none focus:border-blue-500/50 appearance-none text-zinc-300"
                 >
                   {RESOLUTIONS[model].map(res => <option key={res} value={res}>{res}</option>)}
                 </select>
               </div>
               <div className="flex flex-col gap-2">
-                <label className="text-[10px] font-bold text-zinc-500 uppercase tracking-[0.1em] flex items-center gap-1.5 italic">
-                  <RatioIcon className="w-3 h-3 text-indigo-500" /> 画幅比
+                <label className="text-[9px] font-bold text-zinc-500 uppercase tracking-[0.1em] flex items-center gap-1.5 italic">
+                  <RatioIcon className="w-3 h-3 text-indigo-500" /> 比例
                 </label>
                 <select 
                   value={params.ratio}
                   onChange={(e) => setParams({ ...params, ratio: e.target.value })}
-                  className="bg-zinc-900/50 border border-white/10 rounded-xl px-3 py-2.5 text-xs focus:outline-none focus:border-indigo-500/50 appearance-none text-zinc-300"
+                  className="bg-zinc-900/50 border border-white/10 rounded-xl px-2 py-2 text-[10px] focus:outline-none focus:border-indigo-500/50 appearance-none text-zinc-300"
                 >
                   {RATIOS.map(ratio => <option key={ratio} value={ratio}>{ratio}</option>)}
                 </select>
@@ -447,8 +427,8 @@ export default function App() {
                 ref={durationContainerRef}
                 onBlur={handleContainerBlur}
               >
-                <label className="text-[10px] font-bold text-zinc-500 uppercase tracking-[0.1em] flex items-center gap-1.5 italic">
-                  <Clock className="w-3 h-3 text-emerald-500" /> 时长 (4-15s)
+                <label className="text-[9px] font-bold text-zinc-500 uppercase tracking-[0.1em] flex items-center gap-1.5 italic">
+                  <Clock className="w-3 h-3 text-emerald-500" /> 时长
                 </label>
                 <div className="relative">
                   <input 
@@ -456,18 +436,18 @@ export default function App() {
                     value={params.duration}
                     onChange={(e) => setParams({ ...params, duration: parseInt(e.target.value) || 0 })}
                     onFocus={() => setIsDurationFocused(true)}
-                    className="w-full bg-zinc-900/50 border border-white/10 rounded-xl pl-3 pr-12 py-2.5 text-xs focus:outline-none focus:border-emerald-500/50 text-zinc-300 transition-all font-mono"
+                    className="w-full bg-zinc-900/50 border border-white/10 rounded-xl pl-2 pr-8 py-2 text-[10px] focus:outline-none focus:border-emerald-500/50 text-zinc-300 transition-all font-mono"
                   />
-                  <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[9px] text-zinc-600 font-bold uppercase pointer-events-none tracking-tighter">SEC</span>
+                  <span className="absolute right-2 top-1/2 -translate-y-1/2 text-[8px] text-zinc-600 font-bold uppercase pointer-events-none tracking-tighter">SEC</span>
                 </div>
                 
                 <AnimatePresence>
                   {isDurationFocused && (
                     <motion.div 
                       initial={{ opacity: 0, height: 0, marginTop: 0 }}
-                      animate={{ opacity: 1, height: "auto", marginTop: 8 }}
+                      animate={{ opacity: 1, height: "auto", marginTop: 4 }}
                       exit={{ opacity: 0, height: 0, marginTop: 0 }}
-                      className="overflow-hidden bg-emerald-500/5 border border-emerald-500/20 rounded-xl p-3"
+                      className="overflow-hidden bg-emerald-500/5 border border-emerald-500/20 rounded-xl p-3 absolute top-full left-0 right-0 z-10 backdrop-blur-md"
                     >
                       <input 
                         type="range"
@@ -476,9 +456,9 @@ export default function App() {
                         step={1}
                         value={params.duration || 5}
                         onChange={(e) => setParams({ ...params, duration: parseInt(e.target.value) })}
-                        className="w-full h-1.5 bg-zinc-800 rounded-lg appearance-none cursor-pointer accent-emerald-500"
+                        className="w-full h-1 bg-zinc-800 rounded-lg appearance-none cursor-pointer accent-emerald-500"
                       />
-                      <div className="flex justify-between mt-2 text-[9px] text-zinc-500 font-bold font-mono">
+                      <div className="flex justify-between mt-1.5 text-[8px] text-zinc-500 font-bold font-mono">
                         <span>4S</span>
                         <span className="text-emerald-500">{params.duration}S</span>
                         <span>15S</span>
@@ -492,7 +472,7 @@ export default function App() {
             <button 
               onClick={handleGenerate}
               disabled={isGenerating}
-              className={`w-full py-5 rounded-[20px] flex items-center justify-center gap-4 font-bold text-sm tracking-widest transition-all shadow-2xl active:scale-[0.98] ${
+              className={`w-full py-4 rounded-[20px] flex items-center justify-center gap-3 font-bold text-sm tracking-widest transition-all shadow-2xl active:scale-[0.98] ${
                 isGenerating 
                   ? "bg-zinc-800 text-zinc-600 cursor-not-allowed" 
                   : "bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-700 hover:hue-rotate-15 text-white"
@@ -506,7 +486,7 @@ export default function App() {
               ) : (
                 <>
                   <Video className="w-5 h-5" />
-                  开始塑造现实
+                  生成视频
                 </>
               )}
             </button>
@@ -517,8 +497,8 @@ export default function App() {
                 animate={{ opacity: 1, x: 0 }}
                 className="bg-red-500/10 border border-red-500/20 text-red-400 p-4 rounded-2xl flex items-start gap-3 shadow-inner"
               >
-                <AlertCircle className="w-5 h-5 shrink-0 mt-0.5" />
-                <span className="text-[11px] leading-relaxed font-medium">{error}</span>
+                <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
+                <span className="text-[10px] leading-relaxed font-medium">{error}</span>
               </motion.div>
             )}
           </section>
@@ -529,15 +509,15 @@ export default function App() {
           <div className="flex items-center justify-between border-b border-white/5 pb-6">
             <div className="flex items-center gap-4">
               <div className="w-1.5 h-6 bg-blue-500 rounded-full" />
-              <h2 className="text-lg font-bold tracking-tight">创作展厅 <span className="text-zinc-600 font-medium ml-2 text-sm italic">Gallery</span></h2>
+              <h2 className="text-lg font-bold tracking-tight">作品空间 <span className="text-zinc-600 font-medium ml-2 text-sm italic">Workspace</span></h2>
             </div>
             {results.length > 0 && (
               <button 
                 onClick={() => { if(confirm("确定清除所有历史记录？")) setResults([]); }}
-                className="flex items-center gap-2 text-xs font-bold text-zinc-700 hover:text-red-500 transition-colors"
+                className="flex items-center gap-2 text-xs font-bold text-zinc-700 hover:text-red-500 transition-colors uppercase"
               >
                 <Trash2 className="w-3.5 h-3.5" />
-                清除历史
+                清除
               </button>
             )}
           </div>
@@ -640,21 +620,33 @@ export default function App() {
       </main>
 
       {/* 底部装饰 */}
-      <footer className="py-16 border-t border-white/5 mt-auto relative overflow-hidden">
-        <div className="max-w-7xl mx-auto px-6 relative z-10">
-          <div className="flex flex-col md:flex-row items-center justify-between gap-10 opacity-30">
-            <div className="flex items-center gap-8 text-[11px] font-bold uppercase tracking-[0.5em] text-zinc-500">
-              <span className="hover:text-white transition-colors cursor-pointer">Intelligence</span>
-              <span className="hover:text-white transition-colors cursor-pointer">Creativity</span>
-              <span className="hover:text-white transition-colors cursor-pointer">Future</span>
+      <footer className="py-10 border-t border-white/5 mt-auto relative overflow-hidden bg-black/40">
+        <div className="max-w-[1440px] mx-auto px-6 relative z-10 flex flex-col md:flex-row items-center justify-between gap-6">
+          <div className="flex items-center gap-4">
+            <div className="flex items-center gap-2">
+              <Sparkles className="w-4 h-4 text-blue-500" />
+              <span className="text-lg font-bold tracking-tighter">创客AI</span>
             </div>
-            <div className="flex flex-col items-end gap-1">
-              <span className="text-[10px] font-medium text-zinc-400">© 2026 ARCHI-VIDEO STUDIO</span>
-              <span className="text-[9px] text-zinc-700 tracking-tighter">Utilizing Volcengine Seedance 2.0 Engine</span>
+            <div className="w-px h-4 bg-zinc-800" />
+            <p className="text-xs text-zinc-500 leading-relaxed max-w-xl">
+              致力于利用先进的深度学习技术，为全球创作者提供最高性能的视频生成工具。
+            </p>
+          </div>
+          
+          <div className="flex items-center gap-8">
+            <div className="text-[10px] font-medium text-zinc-500">
+              © 2026 <a href="https://ai.cckkc.com" target="_blank" className="text-zinc-400 hover:text-blue-500 transition-colors">创客AI (ai.cckkc.com)</a>
+            </div>
+            <div className="flex items-center gap-4 text-[9px] font-bold uppercase tracking-[0.2em] text-zinc-600">
+              <span>Intelligence</span>
+              <div className="w-1 h-1 rounded-full bg-zinc-800" />
+              <span>Creativity</span>
+              <div className="w-1 h-1 rounded-full bg-zinc-800" />
+              <span>Future</span>
             </div>
           </div>
         </div>
-        <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-full max-w-lg h-1 bg-gradient-to-r from-transparent via-blue-500/20 to-transparent blur-md" />
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-px bg-gradient-to-r from-transparent via-blue-500/10 to-transparent" />
       </footer>
     </div>
   );
