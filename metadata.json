@@ -1,6 +1,9 @@
 {
-  "name": "Volcengine Seedance 2.0 Image Generator",
-  "description": "A high-performance image generation platform integrated with Volcengine Seedance 2.0 and 2.0 Fast models.",
-  "requestFramePermissions": [],
+  "name": "创客AI - 视频生成实验室",
+  "description": "基于火山引擎 Seedance 2.0 旗舰模型的专业级视频生成平台。支持 Seedance 2.0 与 2.0 Fast 模型，提供最高性能的视觉创作工具。",
+  "requestFramePermissions": [
+    "camera",
+    "microphone"
+  ],
   "majorCapabilities": []
 }

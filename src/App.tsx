@@ -72,6 +72,7 @@ export default function App() {
   const [isGenerating, setIsGenerating] = useState(false);
   const [results, setResults] = useState<VideoResult[]>([]);
   const [error, setError] = useState<string | null>(null);
+  const [lastResponse, setLastResponse] = useState<{ taskId?: string; raw?: any } | null>(null);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
   const durationContainerRef = useRef<HTMLDivElement>(null);
@@ -182,6 +183,7 @@ export default function App() {
     setError(null);
 
     try {
+      setLastResponse(null);
       const response = await fetch("/api/generate", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -194,6 +196,7 @@ export default function App() {
       });
 
       const data = await response.json();
+      setLastResponse({ taskId: data.task_id || data.id, raw: data });
 
       if (!response.ok) {
         throw new Error(data.error || "任务创建失败");
@@ -499,6 +502,47 @@ export default function App() {
               >
                 <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
                 <span className="text-[10px] leading-relaxed font-medium">{error}</span>
+              </motion.div>
+            )}
+
+            {lastResponse && (
+              <motion.div 
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="bg-emerald-500/5 border border-emerald-500/20 rounded-2xl p-4 flex flex-col gap-3 shadow-inner"
+              >
+                <div className="flex items-center justify-between border-b border-emerald-500/10 pb-2">
+                  <div className="flex items-center gap-1.5 text-[10px] font-bold text-emerald-500 uppercase tracking-widest">
+                    <RefreshCw className="w-3 h-3" />
+                    服务器响应
+                  </div>
+                  {lastResponse.taskId && (
+                    <span className="text-[9px] font-mono text-emerald-500/60 transition-all hover:text-emerald-500 cursor-default">
+                      ID: {lastResponse.taskId}
+                    </span>
+                  )}
+                </div>
+                
+                <div className="flex flex-col gap-2">
+                  {lastResponse.taskId && (
+                    <div className="flex items-center justify-between text-[10px]">
+                      <span className="text-zinc-500">任务任务 ID:</span>
+                      <span className="text-zinc-300 font-mono select-all decoration-dotted underline decoration-emerald-500/30 underline-offset-4">{lastResponse.taskId}</span>
+                    </div>
+                  )}
+                  {lastResponse.raw?.status && (
+                    <div className="flex items-center justify-between text-[10px]">
+                      <span className="text-zinc-500">当前状态:</span>
+                      <span className="bg-emerald-500/20 text-emerald-400 px-2 py-0.5 rounded-full font-bold scale-90">{lastResponse.raw.status}</span>
+                    </div>
+                  )}
+                  <div className="flex flex-col gap-1.5 mt-1">
+                    <span className="text-[9px] text-zinc-600 font-bold uppercase tracking-tighter">Raw Response / 原始日志</span>
+                    <pre className="bg-black/40 rounded-lg p-2.5 text-[9px] font-mono text-zinc-500 overflow-x-auto whitespace-pre-wrap max-h-32 scrollbar-thin scrollbar-thumb-zinc-800">
+                      {JSON.stringify(lastResponse.raw, null, 2)}
+                    </pre>
+                  </div>
+                </div>
               </motion.div>
             )}
           </section>
