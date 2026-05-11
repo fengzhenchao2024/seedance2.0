@@ -79,6 +79,9 @@ export const AuthModal: React.FC = () => {
       console.error(err);
       if (err.code === 'auth/email-already-in-use') setError('该邮箱已被注册');
       else if (err.code === 'auth/wrong-password' || err.code === 'auth/user-not-found') setError('邮箱或密码错误');
+      else if (err.code === 'auth/operation-not-allowed') {
+        setError('登录服务未开启。请联系管理员在 Firebase 控制台启用 Email/Password 认证方式。');
+      }
       else setError(err.message || '操作失败，请重试');
     } finally {
       setLoading(false);

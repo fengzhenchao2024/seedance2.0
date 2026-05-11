@@ -517,10 +517,22 @@ export default function App() {
               <motion.div 
                 initial={{ opacity: 0, x: -10 }}
                 animate={{ opacity: 1, x: 0 }}
-                className="bg-red-500/10 border border-red-500/20 text-red-400 p-4 rounded-2xl flex items-start gap-3 shadow-inner"
+                className="bg-red-500/10 border border-red-500/20 text-red-400 p-4 rounded-2xl flex flex-col gap-3 shadow-inner"
               >
-                <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
-                <span className="text-[10px] leading-relaxed font-medium">{error}</span>
+                <div className="flex items-center gap-3">
+                  <AlertCircle className="w-5 h-5 shrink-0" />
+                  <span className="text-xs font-bold uppercase tracking-widest">发生错误 / Error</span>
+                </div>
+                <div className="bg-black/40 rounded-xl p-3 border border-red-500/10">
+                  <pre className="text-[11px] leading-relaxed font-mono whitespace-pre-wrap break-all max-h-40 overflow-y-auto scrollbar-thin scrollbar-thumb-red-500/20">
+                    {error}
+                  </pre>
+                </div>
+                {error.includes("format is incorrect") && (
+                  <p className="text-[10px] text-zinc-500 italic px-1">
+                    提示：请检查您的 API Key 是否完整且没有包含空格。
+                  </p>
+                )}
               </motion.div>
             )}
 
