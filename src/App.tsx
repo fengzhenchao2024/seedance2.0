@@ -6,6 +6,8 @@
 import * as React from "react";
 import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "motion/react";
+import { useAuth } from "./components/AuthProvider";
+import { AuthModal } from "./components/AuthModal";
 import { 
   Sparkles, 
   Video, 
@@ -56,6 +58,7 @@ const RESOLUTIONS = {
 const RATIOS = ["21:9", "16:9", "4:3", "1:1", "3:4", "9:16"];
 
 export default function App() {
+  const { user, profile, loading: authLoading, logout } = useAuth();
   const [model, setModel] = useState<ModelType>("seedance-2.0");
   const [params, setParams] = useState<GenerationParams>({
     prompt: "",
@@ -239,6 +242,22 @@ export default function App() {
           </div>
           
           <div className="flex items-center gap-4">
+            {user && (
+              <div className="flex items-center gap-3 bg-white/5 border border-white/10 rounded-xl px-4 py-2">
+                <div className="flex flex-col items-end">
+                  <span className="text-xs font-bold text-white tracking-tight">{profile?.username || user.email}</span>
+                  <button 
+                    onClick={() => logout()}
+                    className="text-[10px] text-zinc-500 hover:text-red-400 font-bold uppercase tracking-widest transition-colors"
+                  >
+                    Logout / 退出
+                  </button>
+                </div>
+                <div className="w-8 h-8 rounded-full bg-gradient-to-br from-indigo-500 to-blue-500 flex items-center justify-center text-xs font-bold shadow-lg">
+                  {(profile?.username || user.email || "?")[0].toUpperCase()}
+                </div>
+              </div>
+            )}
             <div className="relative">
               <button 
                 onClick={() => setIsConfigOpen(!isConfigOpen)}
@@ -270,7 +289,7 @@ export default function App() {
                         <input 
                           type="password"
                           value={userConfig.apiKey}
-                          onChange={(e) => setUserConfig({ ...userConfig, apiKey: e.target.value })}
+                          onChange={(e) => setUserConfig({ ...userConfig, apiKey: e.target.value.trim() })}
                           placeholder="输入您的火山引擎 API Key"
                           className="w-full bg-black/40 border border-white/10 rounded-lg p-2.5 text-xs focus:ring-1 focus:ring-blue-500 outline-none"
                         />
@@ -662,6 +681,10 @@ export default function App() {
           )}
         </div>
       </main>
+
+      <AnimatePresence>
+        {!user && !authLoading && <AuthModal />}
+      </AnimatePresence>
 
       {/* 底部装饰 */}
       <footer className="py-10 border-t border-white/5 mt-auto relative overflow-hidden bg-black/40">

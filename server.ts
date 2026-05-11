@@ -20,7 +20,7 @@ async function startServer() {
     const { prompt, model, resolution, ratio, duration, images, userConfig } = req.body;
     
     // Use user-provided config if available, otherwise fallback to env vars
-    const apiKey = userConfig?.apiKey || process.env.VOLCENGINE_API_KEY;
+    const apiKey = (userConfig?.apiKey || process.env.VOLCENGINE_API_KEY)?.trim();
     const endpointId = model === "seedance-2.0" 
       ? "ep-m-20260421001121-7fswk"
       : "ep-m-20260502212301-rt97m";
@@ -32,9 +32,8 @@ async function startServer() {
     }
 
     try {
-      // For Seedance 2.0 (Video Generation typically), the endpoint might be for cv/video
-      // However, we'll keep the request structure flexible. 
-      // Most Volcengine Ark CV APIs use a similar POST structure.
+      console.log(`[Generate] Model: ${model}, Endpoint: ${endpointId}, Prompt: ${prompt?.slice(0, 50)}...`);
+      
       const response = await fetch("https://ark.cn-beijing.volces.com/api/v3/video_generation", {
         method: "POST",
         headers: {
@@ -47,14 +46,15 @@ async function startServer() {
           resolution: resolution || "720p",
           ratio: ratio || "16:9",
           duration: duration || 5,
-          image_list: images || [], // Supports up to 9 images as requested
+          image_list: images?.map((img: string) => img.split(",")[1] || img) || [], // Only send the base64 part if it's a data URL
         }),
       });
 
       const data = await response.json();
       
       if (!response.ok) {
-        throw new Error(data.error?.message || "生成任务创建失败");
+        console.error("Volcengine API Error Response:", JSON.stringify(data));
+        throw new Error(data.error?.message || `API 错误 (${response.status}): ${JSON.stringify(data.error || data)}`);
       }
 
       // Note: Video generation is usually asynchronous. 
@@ -70,7 +70,8 @@ async function startServer() {
   // Polling endpoint for task status (Common in video gen)
   app.get("/api/task/:taskId", async (req, res) => {
     const { taskId } = req.params;
-    const apiKey = req.headers.authorization?.split(" ")[1] || process.env.VOLCENGINE_API_KEY;
+    const authHeader = req.headers.authorization;
+    const apiKey = (authHeader?.split(" ")[1] || process.env.VOLCENGINE_API_KEY)?.trim();
 
     if (!apiKey) {
       return res.status(400).json({ error: "Missing API Key" });
