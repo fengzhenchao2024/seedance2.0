@@ -104,7 +104,7 @@ export const AuthModal: React.FC = () => {
             <h2 className="text-2xl font-bold tracking-tight text-white mb-2">
               {isLogin ? '欢迎回来' : '开启您的创作工具'}
             </h2>
-            <p className="text-sm text-zinc-500 italic">创客AI - 专业级视频生成实验室</p>
+            <p className="text-sm text-zinc-500 italic">润天AI - 专业级视频生成实验室</p>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-4">

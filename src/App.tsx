@@ -712,7 +712,7 @@ export default function App() {
           <div className="flex items-center gap-4">
             <div className="flex items-center gap-2">
               <Sparkles className="w-4 h-4 text-blue-500" />
-              <span className="text-lg font-bold tracking-tighter">创客AI</span>
+              <span className="text-lg font-bold tracking-tighter">润天AI</span>
             </div>
             <div className="w-px h-4 bg-zinc-800" />
             <p className="text-xs text-zinc-500 leading-relaxed max-w-xl">
@@ -722,7 +722,7 @@ export default function App() {
           
           <div className="flex items-center gap-8">
             <div className="text-[10px] font-medium text-zinc-500">
-              © 2026 <a href="https://ai.cckkc.com" target="_blank" className="text-zinc-400 hover:text-blue-500 transition-colors">创客AI (ai.cckkc.com)</a>
+              © 2026 <a href="https://rt.cckkc.com" target="_blank" className="text-zinc-400 hover:text-blue-500 transition-colors">润天AI (rt.cckkc.com)</a>
             </div>
             <div className="flex items-center gap-4 text-[9px] font-bold uppercase tracking-[0.2em] text-zinc-600">
               <span>Intelligence</span>
