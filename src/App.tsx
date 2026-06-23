@@ -198,11 +198,19 @@ export default function App() {
         }),
       });
 
-      const data = await response.json();
+      let data;
+      const responseText = await response.text();
+      try {
+        data = JSON.parse(responseText);
+      } catch (e) {
+        console.error("Failed to parse response:", responseText);
+        throw new Error(`服务器响应解析失败 (${response.status})。可能是响应内容过大被拦截，或服务器内部错误。提示: ${responseText.slice(0, 100)}...`);
+      }
+
       setLastResponse({ taskId: data.task_id || data.id, raw: data });
 
       if (!response.ok) {
-        throw new Error(data.error || "任务创建失败");
+        throw new Error(data.error || data.message || "任务创建失败");
       }
 
       const taskId = data.task_id || data.id;

@@ -13,7 +13,8 @@ async function startServer() {
   const app = express();
   const PORT = 3000;
 
-  app.use(express.json());
+  app.use(express.json({ limit: "50mb" }));
+  app.use(express.urlencoded({ limit: "50mb", extended: true }));
 
   // Volcengine Ark API Proxy
   app.post("/api/generate", async (req, res) => {
@@ -34,7 +35,7 @@ async function startServer() {
     try {
       console.log(`[Generate] Model: ${model}, Endpoint: ${endpointId}, Prompt: ${prompt?.slice(0, 50)}...`);
       
-      const response = await fetch("https://ark.cn-beijing.volces.com/api/v3/video_generation", {
+      const response = await fetch("https://ark.cn-beijing.volces.com/api/v3/cv/video_generation", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -50,7 +51,14 @@ async function startServer() {
         }),
       });
 
-      const data = await response.json();
+      let data;
+      const responseText = await response.text();
+      try {
+        data = JSON.parse(responseText);
+      } catch (e) {
+        console.error("Failed to parse response as JSON:", responseText);
+        throw new Error(`服务器返回了非 JSON 响应 (${response.status}): ${responseText.slice(0, 200)}`);
+      }
       
       if (!response.ok) {
         console.error("Volcengine API Error Response:", JSON.stringify(data));
@@ -78,7 +86,8 @@ async function startServer() {
     }
 
     try {
-      const response = await fetch(`https://ark.cn-beijing.volces.com/api/v3/video_generation/tasks/${taskId}`, {
+      // For status query, typically SeaDance uses v3/cv/video_generation/query?task_id=...
+      const response = await fetch(`https://ark.cn-beijing.volces.com/api/v3/cv/video_generation/query?task_id=${taskId}`, {
         headers: {
           "Authorization": `Bearer ${apiKey}`,
         },
